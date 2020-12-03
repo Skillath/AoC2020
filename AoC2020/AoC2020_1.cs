@@ -1,33 +1,34 @@
-﻿using System;
-using AoC.Common;
+﻿using AoC.Common;
+using Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AoC2020
 {
     // https://adventofcode.com/2020/day/1
-    class AoC2020_1
+    public class AoC2020_1 : PuzzleBase
     {
-        private const int CurrentDay = 1;
         private const long Param = 2020L;
+        protected override int Day => 1;
 
-        private static IInputLoader _loader;
-
-        static async Task Main(string[] args)
+        public AoC2020_1()
         {
-            _loader = new InputLoaderFromDisk();
+            InputLoader = new InputLoaderFromDisk();
+        }
 
-            var input = (await _loader.Load(CurrentDay))
+        public override async Task<string> Resolve(string input, CancellationToken cancellationToken = default)
+        {
+            var inputData = (await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false))
                 .Split('\n')
                 .Select(int.Parse)
                 .ToDictionary(key => (long)key, value => Param - value);
 
-            var output = input.Where(valuePair => input.ContainsKey(valuePair.Value))
+            var output = inputData.Where(valuePair => inputData.ContainsKey(valuePair.Value))
                 .Select(i => i.Value)
                 .Aggregate((left, right) => left * right);
 
-
-            Console.WriteLine(output);
+            return output.ToString();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ namespace AoC.Common
 {
     public interface IInputLoader
     {
-        Task<string> Load(int day);
+        Task<string> Load(int day, CancellationToken cancellationToken = default);
     }
 
     public class InputDownloader : IInputLoader
@@ -16,8 +15,7 @@ namespace AoC.Common
         private const string Url = @"https://adventofcode.com/2020/day/{0}/input";
         private const string FileName = "input_{0}";
 
-
-        public async Task<string> Load(int day)
+        public async Task<string> Load(int day, CancellationToken cancellationToken = default)
         {
             var url = string.Format(Url, day);
             var fileName = string.Format(FileName, day);
@@ -48,7 +46,7 @@ namespace AoC.Common
             _path = path;
         }
 
-        public async Task<string> Load(int day)
+        public async Task<string> Load(int day, CancellationToken cancellationToken = default)
         {
             var fileName = Path.Combine(_path, string.Format(FileName, day));
 
