@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -87,4 +88,8 @@ namespace AoC2020
                     password.ElementAtOrDefault(policy.Max - 1) == policy.Letter);
         }
     }
+
+    /*
+     * https://adventofcode.com/2020/day/3
+     */
 }

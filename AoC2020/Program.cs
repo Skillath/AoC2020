@@ -18,6 +18,7 @@ namespace AoC2020
             {
                 (IPuzzle)new AoC2020_1(),
                 (IPuzzle)new AoC2020_2(),
+                (IPuzzle)new AoC2020_3(),
             };
 
             _outputs = new[]
