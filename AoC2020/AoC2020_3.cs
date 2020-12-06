@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace AoC2020
 {
+    /*
+     * https://adventofcode.com/2020/day/3
+     */
     public class AoC2020_3 : PuzzleBase
     {
         private const char Param = '#';
@@ -39,14 +42,14 @@ namespace AoC2020
                 .Aggregate((left, right) => left * right);
         }
 
-        private int Algorithm(string[] input, (int X, int Y) Velocity)
+        private int Algorithm(string[] input, (int X, int Y) velocity)
         {
             var count = 0;
             var treeCount = 0;
 
-            for (var i = Velocity.Y; i < input.Length; i += Velocity.Y)
+            for (var i = velocity.Y; i < input.Length; i += velocity.Y)
             {
-                count += Velocity.X;
+                count += velocity.X;
 
                 var row = input[i];
 

@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using AoC.Common;
-using Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,9 +28,10 @@ namespace AoC2020
 
         private long PartOne(IEnumerable<long> data)
         {
-            return data
-                .Where(d => data.Contains(Param - d))
-                .Aggregate((left, right) => left * right);
+            var input = data.ToArray();
+            var diff = input.FirstOrDefault(d => input.Contains(Param - d));
+
+            return diff * (Param - diff);
         }
 
         private long PartTwo(IEnumerable<long> data)
@@ -53,7 +53,7 @@ namespace AoC2020
                 }
             }
 
-            throw new Exception("ERROR");
+            throw new Exception("Not Found");
         }
     }
 }

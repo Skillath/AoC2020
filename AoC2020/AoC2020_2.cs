@@ -36,7 +36,6 @@ namespace AoC2020
         {
             var loadedData = (await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false))
                 .Replace("\r", string.Empty)
-                .Normalize()
                 .Split('\n')
                 .Select(Parse)
                 .ToArray();
@@ -88,8 +87,4 @@ namespace AoC2020
                     password.ElementAtOrDefault(policy.Max - 1) == policy.Letter);
         }
     }
-
-    /*
-     * https://adventofcode.com/2020/day/3
-     */
 }
