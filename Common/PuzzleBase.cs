@@ -12,12 +12,7 @@ namespace Common
     public abstract class PuzzleBase : IPuzzle
     {
         protected abstract int Day { get; }
-        protected IInputLoader InputLoader { get; set; }
-
-        protected PuzzleBase()
-        {
-
-        }
+        protected IInputLoader InputLoader { get; set; } = new InputLoaderFromDisk();
 
         public abstract Task<string> Resolve(string input, CancellationToken cancellationToken = default);
 

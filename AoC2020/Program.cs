@@ -16,13 +16,14 @@ namespace AoC2020
         {
             _puzzle = new[]
             {
-                new AoC2020_1(),
+                (IPuzzle)new AoC2020_1(),
+                (IPuzzle)new AoC2020_2(),
             };
 
             _outputs = new[]
             {
                 (IOutput)new ConsoleOutput(),
-                (IOutput)new ClipboardOutput(),
+                //(IOutput)new ClipboardOutput(),
             };
         }
 
@@ -31,6 +32,7 @@ namespace AoC2020
             foreach (var puzzle in _puzzle)
             {
                 await WriteOutput(await puzzle.Resolve(""));
+                await WriteOutput("\n");
             }
         }
 

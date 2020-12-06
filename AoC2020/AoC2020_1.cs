@@ -1,4 +1,6 @@
-﻿using AoC.Common;
+﻿using System;
+using System.Collections.Generic;
+using AoC.Common;
 using Common;
 using System.Linq;
 using System.Threading;
@@ -12,23 +14,46 @@ namespace AoC2020
         private const long Param = 2020L;
         protected override int Day => 1;
 
-        public AoC2020_1()
-        {
-            InputLoader = new InputLoaderFromDisk();
-        }
-
         public override async Task<string> Resolve(string input, CancellationToken cancellationToken = default)
         {
             var inputData = (await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false))
                 .Split('\n')
-                .Select(int.Parse)
-                .ToDictionary(key => (long)key, value => Param - value);
+                .Select(long.Parse)
+                .ToArray();
 
-            var output = inputData.Where(valuePair => inputData.ContainsKey(valuePair.Value))
-                .Select(i => i.Value)
+            var partOne = PartOne(inputData);
+            var partTwo = PartTwo(inputData);
+
+            return $"Puzzle {Day}\n{partOne}\n{partTwo}";
+        }
+
+        private long PartOne(IEnumerable<long> data)
+        {
+            return data
+                .Where(d => data.Contains(Param - d))
                 .Aggregate((left, right) => left * right);
+        }
 
-            return output.ToString();
+        private long PartTwo(IEnumerable<long> data)
+        {
+            var input = data.ToArray();
+
+            for (int x = 0; x < input.Length - 1; x++)
+            {
+                for (int y = 1; y < input.Length; y++)
+                {
+                    var first = input[x];
+                    var second = input[y];
+
+                    var diff = Param - (first + second);
+
+                    if (input.Except(new[] { first, second }).Contains(diff))
+                        return diff * first * second;
+
+                }
+            }
+
+            throw new Exception("ERROR");
         }
     }
 }
