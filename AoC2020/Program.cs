@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,37 +10,50 @@ namespace AoC2020
 {
     public class Program
     {
-        private static readonly IEnumerable<IPuzzle> _puzzle;
-        private static readonly IEnumerable<IOutput> _outputs;
+        private static readonly string Path = @"./Result/";
+        private static readonly string FileName = @"result.txt";
+
+        private static readonly IAsyncEnumerable<IPuzzle> _puzzles;
+        private static readonly IAsyncEnumerable<IOutput> _outputs;
+
+        private static readonly CancellationTokenSource _cancellationTokenSource;
 
         static Program()
         {
-            _puzzle = new[]
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            _puzzles = (new[]
             {
                 (IPuzzle)new AoC2020_1(),
                 (IPuzzle)new AoC2020_2(),
                 (IPuzzle)new AoC2020_3(),
-            };
+                (IPuzzle)new AoC2020_4(),
+            }).ToAsyncEnumerable();
 
             _outputs = new[]
             {
                 (IOutput)new ConsoleOutput(),
+                (IOutput)new FileOutput(Path, FileName),
                 //(IOutput)new ClipboardOutput(),
-            };
+            }.ToAsyncEnumerable();
         }
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            foreach (var puzzle in _puzzle)
+            var ct = _cancellationTokenSource.Token;
+
+            await foreach (var puzzle in _puzzles.WithCancellation(ct))
             {
-                await WriteOutput(await puzzle.Resolve(""));
-                await WriteOutput("\n");
+                await WriteOutput(await puzzle.Resolve(ct) + "\n", ct);
             }
         }
 
-        private static async Task WriteOutput(object outputData, CancellationToken cancellationToken = default)
+        private static async ValueTask WriteOutput(object outputData, CancellationToken cancellationToken = default)
         {
-            await Task.WhenAll(_outputs.Select(a => a.WriteAsync(outputData, cancellationToken)));
+            await foreach (var output in _outputs.WithCancellation(cancellationToken))
+            {
+                await output.WriteAsync(outputData, cancellationToken);
+            }
         }
     }
 }

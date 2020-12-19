@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,9 +23,9 @@ namespace AoC2020
 
     How many passwords are valid according to their policies?
      */
-    public class AoC2020_2 : PuzzleBase
+    public class AoC2020_2 : PuzzleBase<IEnumerable<(AoC2020_2.PasswordPolicy Policy, string Password)>, int>
     {
-        private struct PasswordPolicy
+        public struct PasswordPolicy
         {
             public int Min { get; set; }
             public int Max { get; set; }
@@ -32,18 +34,26 @@ namespace AoC2020
 
         protected override int Day => 2;
 
-        public override async Task<string> Resolve(string input, CancellationToken cancellationToken = default)
+        protected override async ValueTask<IEnumerable<(PasswordPolicy Policy, string Password)>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
         {
-            var loadedData = (await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false))
+            return await loadedData
                 .Replace("\r", string.Empty)
                 .Split('\n')
+                .ToAsyncEnumerable()
                 .Select(Parse)
-                .ToArray();
+                .ToArrayAsync(cancellationToken);
+        }
 
-            var partOne = loadedData.Count(data => IsPasswordValidPartOne(data.Policy, data.Password));
-            var partTwo = loadedData.Count(data => IsPasswordValidPartTwo(data.Policy, data.Password));
+        protected override async ValueTask<int> FirstPart(IEnumerable<(PasswordPolicy Policy, string Password)> input, CancellationToken cancellationToken = default)
+        {
+            return await input.ToAsyncEnumerable()
+                .CountAsync(data => IsPasswordValidPartOne(data.Policy, data.Password), cancellationToken);
+        }
 
-            return $"Puzzle {Day}\n{partOne}\n{partTwo}";
+        protected override async ValueTask<int> SecondPart(IEnumerable<(PasswordPolicy Policy, string Password)> input, CancellationToken cancellationToken = default)
+        {
+            return await input.ToAsyncEnumerable()
+                .CountAsync(data => IsPasswordValidPartTwo(data.Policy, data.Password), cancellationToken);
         }
 
         /*
@@ -51,7 +61,7 @@ namespace AoC2020
          *1-3 b: cdefg
          *2-9 c: ccccccccc
          */
-        private (PasswordPolicy Policy, string Password) Parse(string rawPolicy)
+        private static (PasswordPolicy Policy, string Password) Parse(string rawPolicy)
         {
             var splittedPass = rawPolicy
                 .Replace('-', ' ')
@@ -72,13 +82,13 @@ namespace AoC2020
             return (policy, splittedPass.Last());
         }
 
-        private bool IsPasswordValidPartOne(PasswordPolicy policy, string password)
+        private static bool IsPasswordValidPartOne(PasswordPolicy policy, string password)
         {
             var characterCount = password.Count(c => c == policy.Letter);
             return characterCount >= policy.Min && characterCount <= policy.Max;
         }
 
-        private bool IsPasswordValidPartTwo(PasswordPolicy policy, string password)
+        private static bool IsPasswordValidPartTwo(PasswordPolicy policy, string password)
         {
             return password.Contains(policy.Letter) &&
                    (password.ElementAtOrDefault(policy.Min - 1) == policy.Letter &&

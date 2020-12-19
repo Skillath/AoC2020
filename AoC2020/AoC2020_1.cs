@@ -8,39 +8,34 @@ using System.Threading.Tasks;
 namespace AoC2020
 {
     // https://adventofcode.com/2020/day/1
-    public class AoC2020_1 : PuzzleBase
+    public class AoC2020_1 : PuzzleBase<IEnumerable<long>, long>
     {
         private const long Param = 2020L;
         protected override int Day => 1;
 
-        public override async Task<string> Resolve(string input, CancellationToken cancellationToken = default)
+        protected override async ValueTask<IEnumerable<long>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
         {
-            var inputData = (await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false))
-                .Split('\n')
-                .Select(long.Parse)
-                .ToArray();
+            var result = loadedData.Split('\n')
+                .Select(long.Parse);
 
-            var partOne = PartOne(inputData);
-            var partTwo = PartTwo(inputData);
-
-            return $"Puzzle {Day}\n{partOne}\n{partTwo}";
+            return result;
         }
 
-        private long PartOne(IEnumerable<long> data)
+        protected override async ValueTask<long> FirstPart(IEnumerable<long> data, CancellationToken cancellationToken = default)
         {
-            var input = data.ToArray();
-            var diff = input.FirstOrDefault(d => input.Contains(Param - d));
+            var input = data.ToAsyncEnumerable();
+            var diff = await input.FirstOrDefaultAwaitWithCancellationAsync((d, ct) => input.ContainsAsync(Param - d, ct), cancellationToken);
 
             return diff * (Param - diff);
         }
 
-        private long PartTwo(IEnumerable<long> data)
+        protected override async ValueTask<long> SecondPart(IEnumerable<long> data, CancellationToken cancellationToken = default)
         {
             var input = data.ToArray();
 
-            for (int x = 0; x < input.Length - 1; x++)
+            for (var x = 0; x < input.Length - 1; x++)
             {
-                for (int y = 1; y < input.Length; y++)
+                for (var y = 1; y < input.Length; y++)
                 {
                     var first = input[x];
                     var second = input[y];
@@ -49,7 +44,6 @@ namespace AoC2020
 
                     if (input.Except(new[] { first, second }).Contains(diff))
                         return diff * first * second;
-
                 }
             }
 
