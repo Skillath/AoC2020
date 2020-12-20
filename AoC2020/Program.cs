@@ -27,6 +27,7 @@ namespace AoC2020
                 (IPuzzle)new AoC2020_2Puzzle(),
                 (IPuzzle)new AoC2020_3Puzzle(),
                 (IPuzzle)new AoC2020_4Puzzle(),
+                (IPuzzle)new AoC2020_5Puzzle(),
             }).ToAsyncEnumerable();
 
             _outputs = new[]

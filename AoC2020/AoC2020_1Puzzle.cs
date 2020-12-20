@@ -13,12 +13,12 @@ namespace AoC2020
         private const long Param = 2020L;
         protected override int Day => 1;
 
-        protected override async ValueTask<IEnumerable<long>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
+        protected override ValueTask<IEnumerable<long>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
         {
             var result = loadedData.Split('\n')
                 .Select(long.Parse);
 
-            return result;
+            return new ValueTask<IEnumerable<long>>(result);
         }
 
         protected override async ValueTask<long> FirstPart(IEnumerable<long> data, CancellationToken cancellationToken = default)
@@ -29,7 +29,7 @@ namespace AoC2020
             return diff * (Param - diff);
         }
 
-        protected override async ValueTask<long> SecondPart(IEnumerable<long> data, CancellationToken cancellationToken = default)
+        protected override ValueTask<long> SecondPart(IEnumerable<long> data, CancellationToken cancellationToken = default)
         {
             var input = data.ToArray();
 
@@ -43,7 +43,7 @@ namespace AoC2020
                     var diff = Param - (first + second);
 
                     if (input.Except(new[] { first, second }).Contains(diff))
-                        return diff * first * second;
+                        return new ValueTask<long>(diff * first * second);
                 }
             }
 

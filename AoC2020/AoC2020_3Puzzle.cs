@@ -15,14 +15,14 @@ namespace AoC2020
         private const char Param = '#';
         protected override int Day => 3;
 
-        protected override async ValueTask<IEnumerable<string>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
+        protected override ValueTask<IEnumerable<string>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
         {
-            return loadedData.Split(Environment.NewLine);
+            return new ValueTask<IEnumerable<string>>(loadedData.Split(Environment.NewLine));
         }
 
-        protected override async ValueTask<long> FirstPart(IEnumerable<string> input, CancellationToken cancellationToken = default)
+        protected override ValueTask<long> FirstPart(IEnumerable<string> input, CancellationToken cancellationToken = default)
         {
-            return await Algorithm(input, (3, 1), cancellationToken);
+            return Algorithm(input, (3, 1), cancellationToken);
         }
 
         protected override async ValueTask<long> SecondPart(IEnumerable<string> input, CancellationToken cancellationToken = default)

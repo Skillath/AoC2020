@@ -81,10 +81,9 @@ namespace AoC2020
 
         protected override async ValueTask<IEnumerable<Passport>> ParseLoadedData(string loadedData, CancellationToken cancellationToken = default)
         {
-            var data = loadedData.Split(Environment.NewLine + Environment.NewLine)
-                .ToAsyncEnumerable();
-
-            return await data.SelectAwaitWithCancellation(ParsePassport)
+            return await loadedData.Split(Environment.NewLine + Environment.NewLine)
+                .ToAsyncEnumerable()
+                .SelectAwaitWithCancellation(ParsePassport)
                 .ToArrayAsync(cancellationToken);
         }
 
