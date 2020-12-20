@@ -1,22 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AoC.Common;
+using AoC.Common.DataLoader;
 
-namespace Common
+namespace AoC.Common.Puzzle
 {
-    public interface IPuzzle
-    {
-        ValueTask<string> Resolve(CancellationToken cancellationToken = default);
-    }
-
     public abstract class PuzzleBase<TInputType, TOutputType> : IPuzzle
     {
         protected abstract int Day { get; }
-        protected virtual IInputLoader InputLoader { get; set; } = new InputLoaderFromDisk();
+        protected virtual IDataLoader DataLoader { get; set; } = new DataLoaderFromDisk();
 
         public async ValueTask<string> Resolve(CancellationToken cancellationToken = default)
         {
-            var loadedData = await InputLoader.Load(Day, cancellationToken).ConfigureAwait(false);
+            var loadedData = await DataLoader.Load(Day, cancellationToken).ConfigureAwait(false);
             var parsedData = await ParseLoadedData(loadedData, cancellationToken).ConfigureAwait(false);
 
             var partOne = await FirstPart(parsedData, cancellationToken).ConfigureAwait(false);

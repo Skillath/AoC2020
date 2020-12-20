@@ -1,14 +1,14 @@
-﻿using Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AoC.Common.Puzzle;
 
 namespace AoC2020
 {
     // https://adventofcode.com/2020/day/1
-    public class AoC2020_1 : PuzzleBase<IEnumerable<long>, long>
+    public class AoC2020_1Puzzle : PuzzleBase<IEnumerable<long>, long>
     {
         private const long Param = 2020L;
         protected override int Day => 1;

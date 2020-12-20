@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using AoC.Common.Puzzle;
+using AoC2020.AoC2020_4.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,98 +25,8 @@ namespace AoC2020
     Passports are separated by blank lines.
 
     */
-    public class AoC2020_4 : PuzzleBase<IEnumerable<AoC2020_4.Passport>, int>
+    public class AoC2020_4Puzzle : PuzzleBase<IEnumerable<AoC2020_4Puzzle.Passport>, int>
     {
-        public interface IValidator
-        {
-            bool Validate(string value);
-        }
-
-        public readonly struct DateValidator : IValidator
-        {
-            private const string YearPattern = @"^\d{4}$";
-            private static readonly Regex Regex = new Regex(YearPattern);
-
-            private readonly int _minDate;
-            private readonly int _maxDate;
-
-            public DateValidator(int minDate, int maxDate)
-            {
-                _maxDate = maxDate;
-                _minDate = minDate;
-            }
-
-            public bool Validate(string value)
-            {
-                return Regex.IsMatch(value)
-                       && int.TryParse(value, out var number)
-                       && number >= _minDate
-                       && number < _maxDate;
-            }
-        }
-
-        public readonly struct HeightValidator : IValidator
-        {
-            private const string HeightValidatorPattern = @"^\d*(cm|in)$";
-            private static readonly Regex Regex = new Regex(HeightValidatorPattern);
-
-            private static readonly IReadOnlyDictionary<string, (int Min, int Max)> Ranges =
-                new Dictionary<string, (int Min, int Max)>()
-                {
-                    {"in", (59, 76)},
-                    {"cm", (150, 193)},
-                };
-
-
-            public bool Validate(string value)
-            {
-                if (!Regex.IsMatch(value))
-                    return false;
-
-                var splittedValue = Regex.Split(value);
-                if (!int.TryParse(splittedValue.FirstOrDefault(), out var number))
-                    return false;
-
-                var (min, max) = Ranges[splittedValue.Last()];
-
-                return number >= min && number <= max;
-            }
-        }
-
-        public readonly struct HairColorValidator : IValidator
-        {
-            private const string HairColorValidatorPattern = @"^#[0-9a-fA-F]{6}$";
-            private static readonly Regex Regex = new Regex(HairColorValidatorPattern);
-            public bool Validate(string value)
-            {
-                return value.Length <= 7 && Regex.IsMatch(value);
-            }
-        }
-
-        public readonly struct EyeColorValidator : IValidator
-        {
-            private static readonly string[] ValidEyeColors = new[]
-            {
-                "amb", "blu", "brn", "gry", "grn", "hzl", "oth",
-            };
-
-            public bool Validate(string value)
-            {
-                return ValidEyeColors.Any(color => color == value);
-            }
-        }
-
-        public readonly struct PassportIdValidator : IValidator
-        {
-            private const string PassportIdValidationPattern = @"^[0-9]{9}$";
-            private static readonly Regex Regex = new Regex(PassportIdValidationPattern);
-
-            public bool Validate(string value)
-            {
-                return Regex.IsMatch(value);
-            }
-        }
-
         public readonly struct PassportEntryData
         {
             public string Id { get; }
@@ -179,7 +90,8 @@ namespace AoC2020
 
         protected override async ValueTask<int> FirstPart(IEnumerable<Passport> input, CancellationToken cancellationToken = default)
         {
-            return await input.ToAsyncEnumerable()
+            return await input
+                .ToAsyncEnumerable()
                 .CountAsync(p => p.Entries.All(entry => PassportEntries.Contains(entry.Id) &&
                                 (!entry.Id.IsRequired || !string.IsNullOrEmpty(entry.Value))), cancellationToken);
         }
@@ -198,7 +110,8 @@ namespace AoC2020
          */
         protected override async ValueTask<int> SecondPart(IEnumerable<Passport> input, CancellationToken cancellationToken = default)
         {
-            return await input.ToAsyncEnumerable()
+            return await input
+                .ToAsyncEnumerable()
                 .CountAsync(p => p.Entries.All(entry => PassportEntries.Contains(entry.Id) &&
                                (!entry.Id.IsRequired || !string.IsNullOrEmpty(entry.Value)) &&
                                (entry.Id.Validator?.Validate(entry.Value) ?? true)), cancellationToken);

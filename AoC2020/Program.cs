@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using AoC.Common.Output;
+using AoC.Common.Puzzle;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AoC.Common;
-using Common;
 
 namespace AoC2020
 {
@@ -24,10 +23,10 @@ namespace AoC2020
 
             _puzzles = (new[]
             {
-                (IPuzzle)new AoC2020_1(),
-                (IPuzzle)new AoC2020_2(),
-                (IPuzzle)new AoC2020_3(),
-                (IPuzzle)new AoC2020_4(),
+                (IPuzzle)new AoC2020_1Puzzle(),
+                (IPuzzle)new AoC2020_2Puzzle(),
+                (IPuzzle)new AoC2020_3Puzzle(),
+                (IPuzzle)new AoC2020_4Puzzle(),
             }).ToAsyncEnumerable();
 
             _outputs = new[]

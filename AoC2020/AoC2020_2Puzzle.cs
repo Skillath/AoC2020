@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AoC.Common;
-using Common;
+using AoC.Common.Puzzle;
 
 namespace AoC2020
 {
@@ -23,7 +23,7 @@ namespace AoC2020
 
     How many passwords are valid according to their policies?
      */
-    public class AoC2020_2 : PuzzleBase<IEnumerable<(AoC2020_2.PasswordPolicy Policy, string Password)>, int>
+    public class AoC2020_2Puzzle : PuzzleBase<IEnumerable<(AoC2020_2Puzzle.PasswordPolicy Policy, string Password)>, int>
     {
         public struct PasswordPolicy
         {

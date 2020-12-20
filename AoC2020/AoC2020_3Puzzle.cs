@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AoC.Common.Puzzle;
 
 namespace AoC2020
 {
     /*
      * https://adventofcode.com/2020/day/3
      */
-    public class AoC2020_3 : PuzzleBase<IEnumerable<string>, long>
+    public class AoC2020_3Puzzle : PuzzleBase<IEnumerable<string>, long>
     {
         private const char Param = '#';
         protected override int Day => 3;
